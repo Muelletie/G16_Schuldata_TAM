@@ -1,0 +1,14 @@
+grep
+	#Mit Hilfe dieses Befehls werden bestimmt Suchmuster in Dateien oder der Standartausgabe
+	 gefunden.
+
+Beispiel: 
+	lspci | grep VGA
+		#Von der Ausgabe der Hardwarekonfiguration [lspci] wird nach dem Suchmuster
+		 VGA gesucht
+
+	grep '^[AS]' MrUnivers
+		#sucht am Anfang der Zeile (^) nach großen S oder A in der Datei...
+
+	grep '\<Coleman\' MrUnivers.dat
+		#sucht nach dem ganzen Wort (Leerzeichen am Anfang und Ende)...

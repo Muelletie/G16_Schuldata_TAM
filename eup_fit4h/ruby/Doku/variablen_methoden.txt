@@ -1,0 +1,38 @@
+Die Programmiersprache Ruby ist streng Klassen/ojekt - orientiert.
+Das bedeutet das eine Vriable vom Datentyp INTEGER ein Objekt der Klasse Fixnum ist,
+bzw. eine Variable vom Datentyp String ein Objekt String, Zeichenkette ein Objekt der 
+Klasse String.
+Die Klassen bieten für die Objekte Methoden an.
+
+var = "Teststring"
+
+var.class
+	die Methode class auf das Objekt var anegwandt gibt die Klassen der Objektes aus.
+
+var.reverse
+	Methode reverse auf var angewandt erzeugt eine Ausgabe, in der der String umgekehrt
+	angezeiget wird. Der Wert der Variablen var ändert sich nicht.
+
+var.reverse!
+	! am Ende der Methode ändert den Variablenwert.
+
+var.center(30)
+	Die Methode center erwartet mindestens einen Parameter.
+
+var.reverse.center(39)
+	Methoden können kaskadiert werden. Der Wert der Variablen var wird umgedreht und anschließend
+	zentriert dargestellt.
+
+var.empty?
+	Die Methode empty? überprüft, ob die Variable leer ist. Falls ja, wird ein true zurücgegeben.
+	Methoden mit einem ? am Ende haben prinzipiell Boolean (true oder false) als Rüchgabewert.
+
+
+
+
+
+
+
+
+
+

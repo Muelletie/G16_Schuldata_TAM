@@ -1,0 +1,19 @@
+GITHUB.COM 
+	neues Repository anlegen
+
+HOST:
+	mkdir kua_fit4h						#Verzeichnis anlegen
+	cd kua_fit4h							#in das Verzeichnis wechseln
+	git	init									#Initialisieren eines neuen GIT Repositories
+
+	touch text.txt						#Erzeugen einer neuen Datei
+	git add text.text					
+		#Die Datei text.txt wird ins neue Repository aufgenommen, d. h. unter Versionsverwaltung gestellt
+	git commit -m 'Initialisierung'
+		#Die neue Datei wird in den Bereich der der Dateien geschoben, die mit dem Server synchronisiert werden sollen
+
+	git remote add origin https://lebichmar@github.com:lebichmar/kua_fit4h.git
+		#Das lokale Repository wird mit einem öffentlichen Repository verbunden; es wird dem bestehenden Github-Repository hinzugefügt.
+
+	git push -u origin master
+		#Die Änderungen, die auf dem lokalen Repository durchgeführt wurden, werden mit dem Stand auf dem Server verglichen und die neuere Version wird auf den Server kopiert.

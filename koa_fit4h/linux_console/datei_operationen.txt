@@ -1,0 +1,75 @@
+cd - Change directory
+	#Ermöglicht  das Navigieren innerhalb des Dateisystems
+
+	cd ..
+		#navigiert eine Ebene im Pfad zurück
+	cd ~
+		# ~ steht für /home/benutzer
+	cd Dokumente
+		#relativer Pfad: vom aktuellen Standort aus
+	cd /home/benutzer/Downloads
+		#absoluter Pfad: von der Wurzel / des Dateisystems anfangend
+
+mkdir - make directories
+	
+	mkdir verzeichnis_01
+		#erzeigt ein Unterverzeichnis im aktuellen Verzeichnis
+	mkdir /home/benutzer/Dokumente/verzeichnis_01
+		#Verzeichnis mit absoluter Pfadangabe erzeugen
+
+touch
+	
+	touch datei_name
+		#zum erstellen von Datein
+
+ls -  List directory contents
+	#erzeugt ein Verzeichnis- und Datei-Ausgabe
+
+	ls -lat
+		-a #alles anzeigen, auch die versteckten Dateien und Ordner
+		-l #
+		-t #
+	
+cp - copy files and directories
+	cp quelle ziel
+	cp datei03 datei 04
+		#die existiierende datei03 wird als datei04 im aktuellen Verzeichnis neu
+			erzeugt oder überschrieben
+	cp datei03 ~/Dokumente/datei03
+		#die Datei wird ins Verzeichnis Dokumente kopiert
+	cp -r verzeichnis01 verzeichnis02
+		#beim kopieren von Verzeichnissen muss er Schalter -r angegeben werden.
+		 Dann wird ein Quell-Verzeichnis mit allen Unterordnern und Dateien in das Ziel kopiert.
+
+rm - Remove File				#löscht Dateien und Verzeichnisse
+		
+		cd /home/tb/
+		rm -rf eup_fit2ah
+												#-r rekursive : von hier an alle Verzeichnisse
+												#-f force :alles wird ohne Nachfrage gelöscht
+
+mv
+	mv quelle zeil
+		#der befehl wird zum Umbenennen und zum verschieben von Dateien und ordnern benutzt.
+
+less
+	less datei_name
+		#zeigt die datei seitenweise an.
+		#weiterblättern mit der Leertaste
+		#beenden mit q
+
+ln
+	ln quelle Ziel
+		#Es wird mit dem Befehl ln ein Link auf eine Datei erzeugt.
+		 Damit wird in dem Inode-Table der Feszplatte der Festplatte ein Verweis zwischen dem Namen
+		 <ziel> und der schon exitierenden Date <quelle> erzeugt.
+		#Wird die Datei <ziel> geändert, ändert sich somit auch die Datei <quelle>
+		#Hardlink
+		#Wird benötigt bei der Instalation von komplexen Programmen.
+		 Es wird dann ein Verweis auf die Programme im System erstellt, die das zu installierende
+		 Programm benötigen
+
+	ln -s quelle ziel
+		#symbolische Links
+		#Ein Verzeichnis oder eine Quelle außerhalb der Festpltte kann so integriert werden
+

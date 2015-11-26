@@ -1,0 +1,10 @@
+Unter Linux versteht man ein distributionsübergrifendes Betriebssystem.
+	Faktisch besteht Linux aber nur aus dem sogenannten Kernel, der die Basiskommunikation
+	zwischen User, Mainboard und Komponenten gewährleistet. Der Kernel ist komplett unabhängig
+	von der Distribution.
+
+	Unter einer Distribution versteht man:
+		- Softwarepakete die nicht zum Kernel gehören, etwa Gimp, Openoffice, etc.
+		- die Art und Weise wie die Software verwaltet wird. Es gibt hier zwei große Paketmanager:
+			Aptitube bei Debian und RPM bei Red Hat
+		- der Process der Instal

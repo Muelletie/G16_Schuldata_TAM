@@ -1,0 +1,22 @@
+#!/bin/bash
+
+read -p "Geben Sie ein p ein: " eingabe
+if [[ $eingabe == 'p' ]]
+	then 
+	echo "Gut gemacht"
+elif [[ $eingabe == 'q' ]]
+	then 
+	echo "ein q !! wie cool"
+else 
+	echo "zu schwer mit p oder q?"
+fi 
+
+Bedingungen:
+	STRING:
+		[[ $bed ]]						#gibt true wenn nicht leer
+		[[ $bed = "wert"]]		#gibt true wenn Übereinstimmung
+
+	ARITHMETRISCH
+		[[ $eingabe -eq 60 ]]		#überprüft auf Gleichheit
+		[[ $eingabe -gt 40 ]]		#überprüft ob größer als
+		[[ $eingabe -lt 20 ]]		#überprüft ob kleiner als

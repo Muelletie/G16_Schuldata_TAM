@@ -1,0 +1,69 @@
+1.3		Linux ist nur der Kernel.
+			Linux ist nicht UniX... nur ähnlich.
+
+1.3.1	Der Kernerl managet die Anwendungen eines Betriebsytems und bestimmt wann welche Anwndung
+			auf resourcen zugreifen/benutzen kann.
+			Der Linux Kernel wird vom Bootloader geladen.
+			In der UNIX Welt ist der Bootvorgang in der regen sichtbar.
+
+1.3.2	Anwendungen folgen einfach dem Application Programming Interface (API) vom Kernel und 
+			im Gegenzug müssen sie sich nicht um die Details der Implementierung zu kümmern.
+			Der Kernel kümmert sich um die Prozesse der Anwendungen, welche gestartet und welche
+			gestopt werden müssen, um die Systemresourcen optimal zu nutzen.
+
+1.3.3	Linux entstand 1991 als Hobbyproject von Linus Torvald.
+			Die Fehler der UNIX-Varianten wurden nicht wiederhpolt.
+			Linux wurde mit/in C geschrieben.
+			GNU wurde parallel entwickelt.
+			GNU hatte aber mehr Anwendungen und keinen richtig funktionierenden Kernel.
+			So wurde Linux genommen.
+
+1.3.4	Fügt mann Linux und die GNU-Tools zusammen bekommt mann ein brauchbares System.
+			Wie UNIX, gibt es viele verschiedene Versionen.
+			CentOS ist von Red Hat.
+			Red Hat hat das Fedora Project gesponsert.
+			Open SUSE ist von Shockwave abgeleitet und beinhaltet viele Aspekte von Red Hat.
+			Ubuntu ist von Debian abgeleiten und von Canonical geschrieben.
+
+1.3.4.1	!"§$%
+
+1.3.5	Linux wurde ursprünglich für den 386 konzipiert und wuchs erst mit der Zeit.
+			Mobiltelefone und Tablets begann mit Linux.
+			Wireless-Router laufen häufig Linux, weil es eine breite Palette von
+			Netzwerk-Funktionen verfügt.
+
+1.4 	!"§$%&/
+
+1.4.1	Erst entscheiden welche rolle der Rechner haben soll.
+			Als nächstes die Funktion.	
+			Fedora braucht nach 7 bis 13 monaten ein update.
+			RHEL erst nach 13 jahren.
+
+1.4.2	Microsoft unterscheidet schwischen Desktop und Server.
+			Der Windws server läuft mit einer GUI wurde aber als reaktion auf Linux auf der in der 
+			Befehlszeilenebene starke fortschritte gemacht.
+
+
+1.4.3	Apple schrieb das OS X-Betriebssystem , welches eine UNIX Zertifizierung durchlaufen hat.
+			OS X baut teilweise auf Software aus dem FreeBSD-Projekt auf.
+
+1.4.4	BSD (Berkeley Software Distribution).
+			BSDs sind in der Regel in der Serverfunktion implementiert, aber es gibt auch Varianten
+			wie GNOME und KDE,die für Desktop-Rollen entwickelt wurden.
+
+1.4.5	Beliebte UNIX-Varianten sind : Oracle Solaris, IBM AIX, HP-UX
+			diese Betriebssysteme sind in der Regel auf die Betriebseigene Hardware zugeschnitten.
+
+1.4.6	!"§$%&/
+
+1.4.7	!"§$%&
+	
+	
+	
+
+
+	
+
+	
+
+	
