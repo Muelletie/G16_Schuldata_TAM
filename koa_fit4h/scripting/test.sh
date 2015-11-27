@@ -11,7 +11,7 @@ if [[ $eingabe ]]
 	
 	git push origin master
 	
-	echo "Sauber"
+	echo "Sauber das lief ja"
 
 else 
 	echo "Da lief was schief"
