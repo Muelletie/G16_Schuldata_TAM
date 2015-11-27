@@ -1,7 +1,18 @@
 #!/bin/bash
 
-read -p "Geben Sie einen Dateinamen ein: " eingabe
-if [[ -e $eingabe ]]
+cd ~/Dokumente/schuldata/
+
+git add . -A
+
+read -p "Commit eingeben: " eingabe
+if [[ $eingabe ]]
 	then 
-	echo "Datei: ${eingabe} gefunden"
+	git commit -am ' $eingabe '
+	
+	git push origin master
+	
+	echo "Sauber"
+
+else 
+	echo "Da lief was schief"
 fi 

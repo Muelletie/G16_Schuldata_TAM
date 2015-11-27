@@ -17,6 +17,9 @@ Bedingungen:
 		[[ $bed = "wert"]]		#gibt true wenn Übereinstimmung
 
 	ARITHMETRISCH
-		[[ $eingabe -eq 60 ]]		#überprüft auf Gleichheit
-		[[ $eingabe -gt 40 ]]		#überprüft ob größer als
-		[[ $eingabe -lt 20 ]]		#überprüft ob kleiner als
+	if [[ $eingabe -eq 60 ]]			# überprüft auf Gleichheit
+	elif [[ $eingabe -gt 40 ]]		# Überprüft ob größer als
+	elif [[ $eingabe -lt 20 ]]		# überprüft ob kleiner als
+
+DATEI:
+ if [[ -e $eingabe ]]		#gibt es die Datei?

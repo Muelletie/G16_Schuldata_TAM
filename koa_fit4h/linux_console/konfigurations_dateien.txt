@@ -16,4 +16,8 @@ Konfigurationsdateien bei jeder Distribution unterschiedlich.
 	- siehe bash_logout, Die Befehle werden beim login ausgeführt
 
 .bashrc
-	- 
+	- alias kua="cd /home/pan/Dokumente/kua"
+		source .bashrc 		#die Datei neu laden
+		kua 							# navigiert zum Ordner
+
+	PATH 				#definiert die Pfade zum Suchen ausführbarer Dateien

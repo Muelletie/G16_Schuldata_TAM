@@ -1,0 +1,25 @@
+1.	Dateien
+	/etc/network/interfaces
+		# Konfiguration der Netzwerkkarte
+		auto eth0				#beim Systemstart wird die 1. Netzwerkkarte initialisert
+		iface eth0 inet static	#statische Adresse, keine dynamische (dhcp)
+	
+		adresse 172.16.161.91
+		netmask 255.255.0.0
+		gateway 172.16.1.253
+		dns 	172.16.1.201
+
+	/etc/hostname
+		#der Rechnername wird hier eingetragen
+		zb.:r1-11s01v02
+		oder wenn Domäne bekannt ist :
+		r1-11s01v03.g16.local
+
+	/etc/hosts
+		#hier stehen Netzwerkadressen zu anderen Rechnern
+		127.0.0.1 localhost
+		172.16.161.200 rl-11s02v04
+
+	/etc/resolv.conf
+		nameserver 161.16.1.201
+		#Adressen von Nameservern

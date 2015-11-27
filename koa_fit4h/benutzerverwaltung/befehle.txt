@@ -1,0 +1,20 @@
+passwd <username>
+	#ändert das Passwort
+
+useradd <username> -m
+	#legt einen neuen Benutzer an, mit seinen Homeverzeichnis
+
+groupadd <gruppenname>
+	#legt eine Gruppe an
+
+FRONTEND:
+	adduser
+		#führt durch einen Wizzard zum Anlegen eines Users
+	addgroup
+	#
+
+userdel <username>
+	#gelöscht
+
+usermod <username>
+	#Änderung für einen Account

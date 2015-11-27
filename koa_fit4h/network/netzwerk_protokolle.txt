@@ -1,0 +1,21 @@
+arp
+	#wnadelt IP in MAC
+	arp 172.16.1.201 zeigt die MAC_adresse an
+
+ICMP
+	#dient der Übermittlung techn. Infos
+	#Teil des IP-Protokollstacks
+
+IP
+	#definiert die Datagramm-Struktur
+	#bewegt die Daten zwischen Transportschichten und Netzzugriffsschichten
+	#routet Datagramme
+	#teilt den Datenstrom und fügt ihn wieder zusammen
+
+TCP
+	#verbindungsorientierter und Fehlerkorrektur Mechanismus
+
+UNP
+	#agiert ohne Fehlerkontrolle
+
+
