@@ -1,0 +1,30 @@
+<h1>Hallo index</h1>
+
+<%= render "array" %>
+
+
+<br><br>
+<li><a href="localhost:3000/movies/seite">"Hier gehts zur Seite"</a></li>
+<br>
+<br>
+<h1>Movies</h1>
+<p>
+	Es <%= @movies.count == 1 ? " ist " : " sind " %> <%= "#{pluralize(@movies.count, "Movie")}" %> vorhanden.
+</p>
+<table>
+	<tr>
+		<th>Titel</th>
+		<th>Rating</th>
+		<th>Total_Gross</th>
+		
+	</tr>
+	<% @movies.each do |movie| %>
+		<tr>
+			<td><%= movie.title %></td>
+			<td><%= movie.rating%></td>
+			<td><%= movie.total_gross %></td>
+			
+			
+		</tr>
+	<% end %>
+</table>
