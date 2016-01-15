@@ -1,0 +1,314 @@
+Action Controllers are the core of a web request in Rails. They are made up of one or more actions that are executed on request and then either it renders a template or redirects to another action. An action is defined as a public method on the controller, which will automatically be made accessible to the web-server through Rails Routes.
+
+By default, only the ApplicationController in a Rails application inherits from ActionController::Base. All other controllers in turn inherit from ApplicationController. This gives you one class to configure things such as request forgery protection and filtering of sensitive request parameters.
+
+A sample controller could look like this:
+
+class PostsController < ApplicationController
+  def index
+    @posts = Post.all
+  end
+
+  def create
+    @post = Post.create params[:post]
+    redirect_to posts_path
+  end
+end
+Actions, by default, render a template in the app/views directory corresponding to the name of the controller and action after executing code in the action. For example, the index action of the PostsController would render the template app/views/posts/index.html.erb by default after populating the @posts instance variable.
+
+Unlike index, the create action will not render a template. After performing its main purpose (creating a new post), it initiates a redirect instead. This redirect works by returning an external “302 Moved” HTTP response that takes the user to the index action.
+
+These two methods represent the two basic action archetypes used in Action Controllers. Get-and-show and do-and-redirect. Most actions are variations on these themes.
+
+Requests
+
+For every request, the router determines the value of the controller and action keys. These determine which controller and action are called. The remaining request parameters, the session (if one is available), and the full request with all the HTTP headers are made available to the action through accessor methods. Then the action is performed.
+
+The full request object is available via the request accessor and is primarily used to query for HTTP headers:
+
+def server_ip
+  location = request.env["REMOTE_ADDR"]
+  render plain: "This server hosted at #{location}"
+end
+Parameters
+
+All request parameters, whether they come from a GET or POST request, or from the URL, are available through the params method which returns a hash. For example, an action that was performed through /posts?category=All&limit=5 will include { "category" => "All", "limit" => "5" } in params.
+
+It's also possible to construct multi-dimensional parameter hashes by specifying keys using brackets, such as:
+
+<input type="text" name="post[name]" value="david">
+<input type="text" name="post[address]" value="hyacintvej">
+A request stemming from a form holding these inputs will include { "post" => { "name" => "david", "address" => "hyacintvej" } }. If the address input had been named post[address][street], the params would have included { "post" => { "address" => { "street" => "hyacintvej" } } }. There's no limit to the depth of the nesting.
+
+Sessions
+
+Sessions allow you to store objects in between requests. This is useful for objects that are not yet ready to be persisted, such as a Signup object constructed in a multi-paged process, or objects that don't change much and are needed all the time, such as a User object for a system that requires login. The session should not be used, however, as a cache for objects where it's likely they could be changed unknowingly. It's usually too much work to keep it all synchronized – something databases already excel at.
+
+You can place objects in the session by using the session method, which accesses a hash:
+
+session[:person] = Person.authenticate(user_name, password)
+And retrieved again through the same hash:
+
+Hello #{session[:person]}
+For removing objects from the session, you can either assign a single key to nil:
+
+# removes :person from session
+session[:person] = nil
+or you can remove the entire session with reset_session.
+
+Sessions are stored by default in a browser cookie that's cryptographically signed, but unencrypted. This prevents the user from tampering with the session but also allows them to see its contents.
+
+Do not put secret information in cookie-based sessions!
+
+Responses
+
+Each action results in a response, which holds the headers and document to be sent to the user's browser. The actual response object is generated automatically through the use of renders and redirects and requires no user intervention.
+
+Renders
+
+Action Controller sends content to the user by using one of five rendering methods. The most versatile and common is the rendering of a template. Included in the Action Pack is the Action View, which enables rendering of ERB templates. It's automatically configured. The controller passes objects to the view by assigning instance variables:
+
+def show
+  @post = Post.find(params[:id])
+end
+Which are then automatically available to the view:
+
+Title: <%= @post.title %>
+You don't have to rely on the automated rendering. For example, actions that could result in the rendering of different templates will use the manual rendering methods:
+
+def search
+  @results = Search.find(params[:query])
+  case @results.count
+    when 0 then render action: "no_results"
+    when 1 then render action: "show"
+    when 2..10 then render action: "show_many"
+  end
+end
+Read more about writing ERB and Builder templates in ActionView::Base.
+
+Redirects
+
+Redirects are used to move from one action to another. For example, after a create action, which stores a blog entry to the database, we might like to show the user the new entry. Because we're following good DRY principles (Don't Repeat Yourself), we're going to reuse (and redirect to) a show action that we'll assume has already been created. The code might look like this:
+
+def create
+  @entry = Entry.new(params[:entry])
+  if @entry.save
+    # The entry was saved correctly, redirect to show
+    redirect_to action: 'show', id: @entry.id
+  else
+    # things didn't go so well, do something else
+  end
+end
+In this case, after saving our new entry to the database, the user is redirected to the show method, which is then executed. Note that this is an external HTTP-level redirection which will cause the browser to make a second request (a GET to the show action), and not some internal re-routing which calls both “create” and then “show” within one request.
+
+Learn more about redirect_to and what options you have in ActionController::Redirecting.
+
+Calling multiple redirects or renders
+
+An action may contain only a single render or a single redirect. Attempting to try to do either again will result in a DoubleRenderError:
+
+def do_something
+  redirect_to action: "elsewhere"
+  render action: "overthere" # raises DoubleRenderError
+end
+If you need to redirect on the condition of something, then be sure to add “and return” to halt execution.
+
+def do_something
+  redirect_to(action: "elsewhere") and return if monkeys.nil?
+  render action: "overthere" # won't be called if monkeys is nil
+end
+Methods
+P
+protected_instance_variables
+R
+request, response
+W
+without_modules
+Constants
+MODULES	=	[ AbstractController::Rendering, AbstractController::Translation, AbstractController::AssetPaths, Helpers, HideActions, UrlFor, Redirecting, ActionView::Layouts, Rendering, Renderers::All, ConditionalGet, EtagWithTemplateDigest, RackDelegation, Caching, MimeResponds, ImplicitRender, StrongParameters, Cookies, Flash, RequestForgeryProtection, ForceSSL, Streaming, DataStreaming, HttpAuthentication::Basic::ControllerMethods, HttpAuthentication::Digest::ControllerMethods, HttpAuthentication::Token::ControllerMethods, # Before callbacks should also be executed the earliest as possible, so # also include them at the bottom. AbstractController::Callbacks, # Append rescue at the bottom to wrap as much as possible. Rescue, # Add instrumentations hooks at the bottom, to ensure they instrument # all the methods properly. Instrumentation, # Params wrapper should come before instrumentation so they are # properly showed in logs ParamsWrapper ]
+ 	
+PROTECTED_IVARS	=	AbstractController::Rendering::DEFAULT_PROTECTED_INSTANCE_VARIABLES + [ :@_status, :@_headers, :@_params, :@_env, :@_response, :@_request, :@_view_runtime, :@_stream, :@_url_options, :@_action_has_layout ]
+ 	
+Define some internal variables that should not be propagated to the view.
+
+Class Public methods
+protected_instance_variables() Link
+Source: show | on GitHub
+
+without_modules(*modules) Link
+Shortcut helper that returns all the modules included in ActionController::Base except the ones passed as arguments:
+
+class MyBaseController < ActionController::Metal
+  ActionController::Base.without_modules(:ParamsWrapper, :Streaming).each do |left|
+    include left
+  end
+end
+This gives better control over what you want to exclude and makes it easier to create a bare controller class, instead of listing the modules required manually.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Action-Controller sind der Kern einer Web-Anfrage in Rails. Sie bestehen aus einer oder mehreren Aktionen, die auf Anfrage ausgeführt werden, und machte dann entweder es eine Vorlage rendert oder Weiterleitungen zu einer anderen Aktion. Eine Aktion wird als eine öffentliche Methode auf dem Controller, der automatisch für das Web-Server über Rails Routen gemacht werden wird definiert.
+
+Standardmäßig werden nur die Applicationcontroller in einer Rails-Anwendung erbt von Actioncontroller :: Base. Alle anderen Controller wiederum erben von Application. Dies gibt Ihnen eine Klasse, um Dinge wie Anfrage Fälschungsschutz und Filterung von sensiblen Anfrage Parameter zu konfigurieren.
+
+Eine Probe-Controller könnte wie folgt aussehen:
+
+class  PostsController  < ApplicationController
+   def  index
+     @posts = Post . all 
+  end 
+
+  def  create
+     @post = Post . create  params [ : post ]
+     redirect_to  posts_path 
+  end 
+end
+Aktionen, die standardmäßig machen Sie eine Vorlage in der app / views Verzeichnis entsprechend dem Namen der Controller und die Aktion nach der Ausführung von Code in der Action. Beispielsweise kann der Index hätte Aktion des Posts die Vorlage rendern app / views / posts / index.html.erb standardmäßig nach dem Füllen derposts Instanzvariable.
+
+Anders als Index, wird die Aktion nicht zu schaffen machen Sie eine Vorlage. Nach der Durchführung der Hauptzweck (Erstellen einer neuen post), eine Umleitung leitet sie statt. Diese Umleitung funktioniert auch durch Rücksendung eines externen "302 Moved" HTTP-Antwort, die den Benutzer auf den Index Handlung spielt.
+
+Diese beiden Methoden stellen die beiden grundlegenden Maßnahmen Archetypen in Aktion Controllers verwendet. Get-and-Show und machen-und-Weiterleitung. Die meisten Aktionen sind Abweichungen zu diesen Themen.
+
+Anfragen
+
+Für jede Anfrage bestimmt der Router auf den Wert der Steuereinrichtung und Aktionstasten. Diese bestimmen, welche Controller und die Aktion aufgerufen werden. Die verbleibenden Anforderungsparameter, die Sitzung (falls verfügbar) und die vollständige Anfrage mit allen HTTP-Header der Einwirkung durch Zugriffsmethoden zur Verfügung gestellt. So wird die Aktion durchgeführt wird.
+
+Der vollständige Request-Objekt ist über die Anfrage Zugriffs zur Verfügung und wird in erster Linie verwendet, um HTTP-Header abfragen:
+
+def  server_ip
+   Lage = Anfrage. env ["REMOTE_ADDR"]
+   render Ebene: "Dieser Server gehostet # {Ort}" End-  
+
+Parameter
+
+Alle Anforderungsparameter, ob sie von einem GET oder POST Anfrage oder aus der URL zu kommen, sind über das params Verfahren, das einen Hash zurück zur Verfügung. Zum Beispiel, eine Aktion, die durchgeführt wurde / Beiträge? Category = All & limit = 5 gehören {"Kategorie" => "Alle", "Limit" => "5"} in params.
+
+Es ist auch möglich, mehrdimensionale Parameter Hashes, indem Sie Tasten mit Klammern, wie zum Beispiel zu konstruieren:
+
+< input  type = "text"  name = "post[name]"  value = "david" > 
+< input  type = "text"  name = "post[address]"  value = "hyacintvej" >
+Der Antrag einer Form hält diese Eingaben stammen gehören {"post" => {"name" => "David", "Adresse" => "hyacintvej"}}. Wenn die Adresseingabe genannt worden war post [Adresse] [Straße], die params würden eingeschlossen haben {"post" => {"Adresse" => {"Straße" => "hyacintvej"}}}. Es gibt keine Grenze für die Tiefe der Verschachtelung.
+
+Sessions
+
+Sessions können Sie Objekte in zwischen den Anfragen zu speichern. Dies ist nützlich für Objekte, die noch nicht bereit sind, um beibehalten werden, wie beispielsweise ein Anmelden Objekt in einem mehrseitigen Prozess aufgebaut, oder Gegenstände, die nicht viel ändern und werden die ganze Zeit benötigt wird, wie beispielsweise ein User-Objekt für ein System das erfordert Anmeldung. Die Sitzung nicht verwendet werden sollte jedoch als Cache für Objekte, bei denen es wahrscheinlich ist, sie könnten unwissentlich verändert werden. Es ist in der Regel zu viel Arbeit, um alles synchron zu halten - etwas, Datenbanken zeichnen sich bereits auf.
+
+Sie können Objekte in der Sitzung mithilfe der Ort Sitzung Methode, die einen Hash-Zugriffe:
+
+session [: Person] = Person.authenticate (Benutzername, Passwort)
+Und wieder abgerufen durch den gleichen Hash:
+
+Hallo  # {session [: Person]}
+Zum Entfernen von Objekten aus der Sitzung, können Sie entweder vergeben Sie einen einzigen Schlüssel zu nil:
+
+# Löscht: Person von Sitzung 
+Sitzung [: Person] = nil
+oder Sie können die gesamte Session mit entfernen reset_session.
+
+Sitzungen werden standardmäßig in einem Browser-Cookie, die kryptografisch signiert, aber unverschlüsselt gespeichert. Dies verhindert, dass den Benutzer von Manipulationen an der Sitzung, sondern auch ermöglicht es ihnen, um seinen Inhalt zu sehen.
+
+Stellen Sie keine geheimen Informationen im Cookie-basierte Sessions!
+
+Antworten
+
+Jede Aktion führt zu einer Antwort, die die Kopf- und Dokument hält, um den Browser des Benutzers gesendet werden. Die eigentliche Antwort Objekt wird automatisch durch den Einsatz macht und leitet und erfordert kein Eingreifen des Benutzers generiert.
+
+Renders
+
+Action Controller sendet Inhalte an den Benutzer mit einem der fünf Rendering-Methoden. Der vielseitigste und gemeinsame ist die Wiedergabe der Vorlage. Im Action Pack enthalten ist die Action View, das Rendern von ermöglicht ERB-Vorlagen. Es wird automatisch konfiguriert. Der Regler durchläuft Objekte zu der Ansicht, durch die Zuordnung Instanzvariablen:
+
+def  
+  zeigenpost = Beitrag. finden (params [: id])
+ Ende
+Die dann automatisch in die Ansicht zur Verfügung:
+
+Titel: <% =post. Titel%>
+Sie müssen nicht auf die automatische Wiedergabe verlassen. So wird beispielsweise Maßnahmen, die bei der Erbringung von verschiedenen Vorlagen führen kann Anleitung Rendering Methoden verwenden:
+
+def  search
+   @results = Search . find ( params [ : query ])
+   case  @results . count 
+    when  0  then  render  action :  "no_results" 
+    when  1  then  render  action :  "show" 
+    when  2 .. 10  then  render  action :  "show_many" 
+  end 
+end
+Lesen Sie mehr über das Schreiben ERB und Builder-Templates in ActionView :: Base.
+
+Weiterleitungen
+
+Weiterleitungen werden verwendet, um von einer Aktion in eine andere verschieben. Zum Beispiel, nach einer zu erstellen Aktion, die einen Blog-Eintrag in die Datenbank speichert, könnten wir die Benutzer den neuen Eintrag anzuzeigen. Weil wir nach guter DRY Prinzipien (Do not Repeat Yourself), werden wir wieder zu verwenden (und umgeleitet werden, um) eine Show Aktion, die wir annehmen, bereits erstellt wurde. Der Code könnte wie folgt aussehen:
+
+def  
+  erstellenentry = Eintrag. neue (params [: 
+  Eingabe]), wennentry. speichern # Der Eintrag korrekt gespeichert wurde, umzuleiten, um zu zeigen redirect_to Aktion: "Show", id:entry. id anderes # Dinge nicht gehen so gut, etwas anderes tun Ende Ende 
+    
+       
+  
+    
+  
+
+In diesem Fall wird nach dem Speichern unserer neuen Eintrag in die Datenbank, auf die der Benutzer den umgeleiteten zeigen Verfahren, die dann ausgeführt wird. Beachten Sie, dass es sich um eine externe HTTP-Level-Umleitung, die bewirken, dass der Browser, um eine zweite Anfrage (A nach der Show action) machen wird, und nicht eine interne Umleitung, die sowohl "schaffen" innerhalb einer Anfrage ruft und dann "Show" .
+
+Erfahren Sie mehr über redirect_to und welche Möglichkeiten Sie haben, in Actioncontroller :: Umleiten.
+
+Mit mehreren Umleitungen oder rendert
+
+Eine Aktion enthält möglicherweise nur eine einzige zu machen oder eine einzelne Weiterleitung. Der Versuch, zu versuchen, entweder wieder tun wird in einem DoubleRenderError führen:
+
+def  do_something
+   redirect_to  Aktion:  "anderswo" 
+  rendern  Aktion:  "overthere"  # wirft DoubleRenderError 
+Ende
+Wenn Sie über den Zustand der etwas umleiten müssen, dann achten Sie darauf, um hinzuzufügen "und Rückkehr", um die Ausführung zu stoppen.
+
+def  do_something
+   redirect_to (Aktion: "anderswo") und zurück, wenn Affen. nil? rendern Aktion: "overthere" # wird nicht aufgerufen, wenn Affen gleich Null sein Ende    
+     
+
+Methoden
+P
+protected_instance_variables
+R
+Anfrage, Antwort
+W
+without_modules
+Konstanten
+MODULE	=	[AbstractController :: Rendering, AbstractController :: Übersetzen, AbstractController :: AssetPaths, Helfer, HideActions, URLFor, Umleiten, ActionView :: Layouts, Rendering, Renderers :: Alle, ConditionalGet, EtagWithTemplateDigest, RackDelegation, Caching, MimeResponds, ImplicitRender, StrongParameters, Cookies, Flash, RequestForgeryProtection, ForceSSL, Streaming, DataStreaming, HttpAuthentication :: Grund :: ControllerMethods, HttpAuthentication :: Digest :: ControllerMethods, HttpAuthentication :: Token :: ControllerMethods, # Vor Rückrufe sollten auch die früheste wie möglich ausgeführt werden, so dass # sind sie an der Unterseite. AbstractController :: Rückrufe, # anhängen Rettungs am Boden so viel wie möglich zu wickeln. Rettung, # hinzufügen Besetzungen Haken an der Unterseite, um sie richtig zu gewährleisten Instrument # alle Methoden. Besetzung, sollte # Params Wrapper vor Instrumentierung kommen, so dass sie richtig in # Logs zeigten ParamsWrapper]
+ 	
+PROTECTED_IVARS	=	AbstractController :: Rendering :: DEFAULT_PROTECTED_INSTANCE_VARIABLES + [:_ Status:_ Header:_ params,:_ env:_ Antwort:_ Wunsch:_ view_runtime,:_ Strom:_ url_options,:_ action_has_layout]
+ 	
+Definieren einige interne Variablen, die nicht auf die Ansicht verbreitet werden soll.
+
+Klasse Öffentliche Methoden
+protected_instance_variables () Link-
+Quelle: Show | auf GitHub
+
+without_modules (* Module) Link-
+Shortcut-Helfer, die alle Module kehrt in enthalten Actioncontroller :: Base, außer die, die als Argumente übergeben:
+
+class  MyBaseController  < ActionController::Metal
+   ActionController::Base . without_modules ( : ParamsWrapper , : Streaming ). each  do | left |
+     include  left 
+  end 
+end
+Dies ermöglicht eine bessere Kontrolle darüber, was Sie ausschließen möchten, und macht es einfacher, mit einem nackten Controller-Klasse zu erstellen, statt die Auflistung der benötigten Module manuell.
+
+Quelle: Show | auf GitHub
+
+
+
+

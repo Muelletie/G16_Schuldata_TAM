@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  vorname: MyText
+  nachname: MyText
+  beschreibung: MyText
+  anzahl: 1
+
+two:
+  vorname: MyText
+  nachname: MyText
+  beschreibung: MyText
+  anzahl: 1
