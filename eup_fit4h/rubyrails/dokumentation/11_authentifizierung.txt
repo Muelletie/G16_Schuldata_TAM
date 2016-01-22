@@ -1,0 +1,90 @@
+Rails bringt die Vorraussetzungen für eine Authentifizierung mit.
+
+1. Aktiviere Sie in der Datei 'Gemfile' das Gem "gem 'bcrypt', '~>3.1.7'",
+	indem sie das Kommentarzeichen entfernen.
+
+2. Im Model das für die Authentifizierung verwendet wird, in unserem Beispiel User,
+	ist die Angebe...
+
+				class User < ActiveRecord::Base
+					has_secure_password
+
+								...nötig.
+	Damit stehen in diesem Model verschiedene Methoden zur Verschlüsselung und zur Authentifizierung
+	zur Verfügung.
+
+3. Ein zentrales Attribut in dem Model ist 'password'
+	das kann beim Anlegen berücksichtigt werden:
+
+		rails g model user email password:digest
+
+	In jedem fall muss in der Migration für das Feld attribut die Zeile stehen:
+
+		t.string : password_digest
+
+	Dieser Eintrag sorgt dafür, dass in Kombination mit 'has_sercure_password' der 
+	Passwordeintrag in der Tabelle verschlüsselt wird.
+
+4. Das Formular zum anlegen eines Users enthält zwei Textfelder für das Passwort:
+
+			<%= f.password_field :password %>
+			<%= f.password_field :password_confirmation %>
+
+	Authentifizierung:
+	Neben dem Model für die Accounts wird ein Controller 'Sission' angelegt, in
+	dem die Authentifizierung stattfindet.
+
+		rails g controller sessions new
+
+	Der Controller het eine Action für das Login-Formular (new-Action), eine
+	create-Action für das Überprüfen der Logindaten und eine destroy-Action für
+	das Ausloggen.
+	Für die Authentifizierung wird eine Methode von bcrypt (user.authenticate(password))
+	verwendet.
+	Wir haben eine eigene Klassenmethode von User mit dem Namen authenticate
+	geschrieben, die wir im Controller aufrufen.
+
+
+Quellcode einfügen...
+
+
+	Bei einem Fehlschlagen der Authentifizierung wird in das Login-Formular
+	zurückgeleitet.
+	Bei einem erfolgraichen Authentifizieren wird eine Session-Variable angelegt
+		session[:user_id] = user.id
+
+	Diese Sessionvariable wird bei jedem Aufruf im application_controller
+	überprüft:
+
+		def 
+
+
+	Beim Logout eines Users wird diese Session zerstört:
+
+
+
+
+	Überprüfung der Authentifizierung im Controller
+	Um den Zugriff eines Users zu beschränken kann im Controller eine Abfrage
+	durchgeführt werden, ob der User eingeloggt ist.
+
+
+
+
+
+	Wenn die Variable (Helper) current_user nicht gefüllt ist, dann beduetet das,
+	dass der User nicht angemeldet ist. Er wird dann zum Loginfenster umgeleitet.
+
+	Beispiel:
+	Damit nur ein eingeloggter User andere User sehen kann, aber dennoch das 
+	Anlegen eines neuen Users möglich ist, steht in dem users_controller:
+
+			before_action :require_signin, except: [:new, :create]
+
+	before_action => vor jeder weiteren Aktivität wird diese Methode ausgeführt.
+	:require_signin => die von uns im application_controller definierte Methode
+	wird ausgeführt.
+
+	except: [:new, :create] => Die Actions zum Anlegen eines neuen Users new und 
+	create werden ausgenommen
+

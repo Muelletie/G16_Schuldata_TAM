@@ -11,7 +11,7 @@
   	</ul>
     <ul class="right">
     	<% if current_user %>
-        <li><%= link_to "#{current_user.name} logout", "#" %></li>
+        <li><%= link_to "#{current_user.name} logout", logout_path %></li>
     		<li><%= link_to current_user.name, edit_user_path(current_user.id) %></li>
     	<% else %>
 	      <li><%= link_to "Neuen Account", signup_path %></li>
